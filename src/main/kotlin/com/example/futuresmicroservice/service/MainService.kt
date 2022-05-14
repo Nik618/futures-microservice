@@ -54,7 +54,7 @@ class MainService {
     fun getApplicationsForType(requestType : String): String? {
 
         val applications = Applications()
-
+        applications.list = mutableListOf()
         val applicationEntities = applicationRepository.findAllByType(requestType)
         applicationEntities.forEach() {
             applications.list.add(Application().apply {
@@ -73,6 +73,7 @@ class MainService {
     fun getObligationsForUser(requestIdUser : Long): String? {
 
         val obligations = Obligations()
+        obligations.list = mutableListOf()
         var obligationEntities = obligationRepository.findAll()
         val userEntity = userRepository.findById(requestIdUser).get()
         obligationEntities = if (userEntity.role.equals("buyer")) {
@@ -97,6 +98,7 @@ class MainService {
     fun getResultsForUser(requestIdUser : Long): String? {
 
         val results = Results()
+        results.list = mutableListOf()
         val resultEntities = resultRepository.findAllById(requestIdUser)
 
         resultEntities.forEach() {
@@ -167,6 +169,7 @@ class MainService {
     fun getUsers(): String? {
 
         val users = Users()
+        users.list = mutableListOf()
         val userEntities = userRepository.findAll()
 
         userEntities.forEach() {
