@@ -11,7 +11,6 @@ import com.example.futuresmicroservice.jpa.repository.UserRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -70,15 +69,21 @@ class MainService {
     }
 
     @GetMapping("/api/getObligationsForUser")
-    fun getObligationsForUser(idUser : Long): String? {
+    fun getObligationsForUser(requestIdUser : Long): String? {
 
         val obligations = Obligations()
+        var obligationEntities = obligationRepository.findAll()
+        val userEntity = userRepository.findById(requestIdUser).get()
+        if (userEntity.role.equals("buyer")) {
+            obligationEntities = obligationRepository.findAllByIdBuyer(userRepository.findById(requestIdUser).get())
+        } else {
+            obligationEntities = obligationRepository.findAllByIdSeller(userRepository.findById(requestIdUser).get())
+        }
 
-        val obligationEntities = obligationRepository.findAllById(idUser)
         obligationEntities.forEach() {
             obligations.list.add(Obligation().apply {
                 date = LocalDateTime.now()
-                idBuyer = it?.idBuyer!!.id
+                idBuyer = it.idBuyer!!.id
                 idSeller = it.idSeller!!.id
                 count = it.count
                 price = it.price
@@ -91,8 +96,8 @@ class MainService {
     fun getResultsForUser(requestIdUser : Long): String? {
 
         val results = Results()
-
         val resultEntities = resultRepository.findAllById(requestIdUser)
+
         resultEntities.forEach() {
             results.list.add(Result().apply {
                 date = LocalDateTime.now()
