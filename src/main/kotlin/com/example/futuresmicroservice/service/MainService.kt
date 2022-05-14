@@ -4,6 +4,7 @@ import com.example.futuresmicroservice.dto.*
 import com.example.futuresmicroservice.jpa.entities.ApplicationEntity
 import com.example.futuresmicroservice.jpa.entities.ObligationEntity
 import com.example.futuresmicroservice.jpa.entities.ResultEntity
+import com.example.futuresmicroservice.jpa.entities.UserEntity
 import com.example.futuresmicroservice.jpa.repository.ApplicationRepository
 import com.example.futuresmicroservice.jpa.repository.ObligationRepository
 import com.example.futuresmicroservice.jpa.repository.ResultRepository
@@ -147,5 +148,20 @@ class MainService {
         applicationRepository.delete(applicationEntity)
         return true
     }
+
+    @PostMapping("/api/createUser")
+    fun createUser(@RequestBody request : String): Boolean? {
+
+        val user: User = gson.fromJson(request, object : TypeToken<User>() {}.type)
+        val userEntity = UserEntity().apply {
+            login = user.login
+            password = user.password
+            role = user.role
+            name = user.name
+        }
+        userRepository.save(userEntity)
+        return true
+    }
+
 
 }
