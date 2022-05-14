@@ -176,6 +176,7 @@ class MainService {
 
         userEntities.forEach() {
             users.list.add(User().apply {
+                id = it.id
                 password = it.password
                 role = it.role
                 login = it.login
