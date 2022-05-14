@@ -74,10 +74,10 @@ class MainService {
         val obligations = Obligations()
         var obligationEntities = obligationRepository.findAll()
         val userEntity = userRepository.findById(requestIdUser).get()
-        if (userEntity.role.equals("buyer")) {
-            obligationEntities = obligationRepository.findAllByIdBuyer(userRepository.findById(requestIdUser).get())
+        obligationEntities = if (userEntity.role.equals("buyer")) {
+            obligationRepository.findAllByIdBuyer(userRepository.findById(requestIdUser).get())
         } else {
-            obligationEntities = obligationRepository.findAllByIdSeller(userRepository.findById(requestIdUser).get())
+            obligationRepository.findAllByIdSeller(userRepository.findById(requestIdUser).get())
         }
 
         obligationEntities.forEach() {
