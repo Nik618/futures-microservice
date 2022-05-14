@@ -45,6 +45,7 @@ class MainService {
             price = application.price
             idUser = userRepository.findById(application.idUser!!).get()
             type = application.type
+            idObligation = obligationRepository.findById(application.idObligation!!).get()
         }
         applicationRepository.save(applicationEntity)
         return true
