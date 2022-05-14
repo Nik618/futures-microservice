@@ -163,5 +163,22 @@ class MainService {
         return true
     }
 
+    @GetMapping("/api/getUsers")
+    fun getUsers(): String? {
+
+        val users = Users()
+        val userEntities = userRepository.findAll()
+
+        userEntities.forEach() {
+            users.list.add(User().apply {
+                password = it.password
+                role = it.role
+                login = it.login
+                name = it.name
+            })
+        }
+        return gson.toJson(users)
+    }
+
 
 }
