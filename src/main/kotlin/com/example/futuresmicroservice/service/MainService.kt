@@ -61,11 +61,13 @@ class MainService {
         applicationEntities.forEach() {
             applications.list.add(Application().apply {
                 date = LocalDateTime.now()
-                idUser = it?.idUser!!.id
-                count = it.count
-                price = it.price
-                idObligation = it.idObligation!!.id
-                type = it.type
+                if (it?.idUser != null)
+                    idUser = it.idUser!!.id
+                count = it?.count
+                price = it?.price
+                if (it?.idObligation != null)
+                    idObligation = it.idObligation!!.id
+                type = it?.type
             })
         }
         return gson.toJson(applications)
