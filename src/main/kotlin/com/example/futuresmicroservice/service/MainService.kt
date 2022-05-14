@@ -123,6 +123,10 @@ class MainService {
         val userEntity = userRepository.findById(obligationRequest.idUser!!).get()
         val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get()
 
+        var onDelete = true
+        if (obligationRequest.count!! < applicationEntity.count!!)
+            onDelete = false
+
         // если обязательство уже существует на момент продажи
         val obligationEntityLast = applicationEntity.idObligation
         if (obligationEntityLast != null) {
@@ -151,7 +155,12 @@ class MainService {
             } // расставляем id в зависимости от типа заявки
         }
         obligationRepository.save(obligationEntity)
-        applicationRepository.delete(applicationEntity)
+        if (onDelete)
+            applicationRepository.delete(applicationEntity)
+        else {
+            applicationEntity.count = applicationEntity.count!! - obligationEntity.count!!
+            applicationRepository.save(applicationEntity)
+        }
         return true
     }
 
