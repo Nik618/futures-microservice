@@ -1,6 +1,7 @@
 package com.example.futuresmicroservice.jpa.entities
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
+import org.jetbrains.kotlin.test.NOARG_COMPILER_PLUGIN_ID
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -28,7 +29,7 @@ open class ApplicationEntity {
     @Column(name = "date", nullable = false)
     open var date: LocalDateTime? = null
 
-    @OneToOne(cascade = [(CascadeType.ALL)])
+    @OneToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "idUser", referencedColumnName = "id")
     open var idUser: UserEntity? = null
 
@@ -41,7 +42,7 @@ open class ApplicationEntity {
     @Column(name = "type", nullable = false)
     open var type: String? = null
 
-    @OneToOne(cascade = [(CascadeType.ALL)])
+    @OneToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "idObligation", referencedColumnName = "id")
     open var idObligation: ObligationEntity? = null
 }

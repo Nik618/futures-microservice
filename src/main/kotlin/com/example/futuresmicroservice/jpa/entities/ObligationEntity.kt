@@ -29,11 +29,11 @@ open class ObligationEntity {
     @Column(name = "date", nullable = false)
     open var date: LocalDateTime? = null
 
-    @OneToOne(cascade = [(CascadeType.ALL)])
+    @OneToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "idSeller", referencedColumnName = "id")
     open var idSeller: UserEntity? = null
 
-    @OneToOne(cascade = [(CascadeType.ALL)])
+    @OneToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "idBuyer", referencedColumnName = "id")
     open var idBuyer: UserEntity? = null
 

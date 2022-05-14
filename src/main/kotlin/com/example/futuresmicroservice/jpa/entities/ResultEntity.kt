@@ -27,7 +27,7 @@ open class ResultEntity {
     @Column(name = "date", nullable = false)
     open var date: LocalDateTime? = null
 
-    @OneToOne(cascade = [(CascadeType.ALL)])
+    @OneToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "idUser", referencedColumnName = "id")
     open var idUser: UserEntity? = null
 
