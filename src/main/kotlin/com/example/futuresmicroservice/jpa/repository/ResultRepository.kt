@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ResultRepository : CrudRepository<ResultEntity, Long> {
-    fun findAllById(id: Long): List<ResultEntity?>
+    fun findAllByIdUser(idUser: Long): List<ResultEntity?>
 }

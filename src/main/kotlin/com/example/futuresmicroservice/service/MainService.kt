@@ -194,7 +194,7 @@ class MainService {
 
         val results = Results()
         results.list = mutableListOf()
-        val resultEntities = resultRepository.findAllById(requestIdUser)
+        val resultEntities = resultRepository.findAllByIdUser(requestIdUser)
 
         resultEntities.forEach() {
             results.list.add(Result().apply {
