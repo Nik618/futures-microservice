@@ -133,7 +133,7 @@ class MainService {
         applicationEntities.forEach() {
             applications.list.add(Application().apply {
                 id = it?.id
-                date = LocalDateTime.now()
+                date = LocalDateTime.now().toString()
                 if (it?.idUser != null)
                     idUser = it.idUser!!.id
                 count = it?.count
@@ -152,7 +152,7 @@ class MainService {
         val applicationEntity = applicationRepository.findById(idApplication).get()
             val application = Application().apply {
                 id = applicationEntity.id!!
-                date = LocalDateTime.now()
+                date = LocalDateTime.now().toString()
                 if (applicationEntity.idUser != null)
                     idUser = applicationEntity.idUser!!.id
                 count = applicationEntity.count
@@ -181,7 +181,7 @@ class MainService {
         obligationEntities.forEach() {
             obligations.list.add(Obligation().apply {
                 id = it.id
-                date = LocalDateTime.now()
+                date = LocalDateTime.now().toString()
                 idBuyer = it.idBuyer!!.id
                 idSeller = it.idSeller!!.id
                 count = it.count
@@ -200,7 +200,7 @@ class MainService {
 
         resultEntities.forEach() {
             results.list.add(Result().apply {
-                date = LocalDateTime.now()
+                date = LocalDateTime.now().toString()
                 idUser = it?.idUser!!.id
                 value = it.value
                 currentPrice = it.currentPrice
