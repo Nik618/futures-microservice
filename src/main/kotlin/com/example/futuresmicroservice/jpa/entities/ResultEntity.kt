@@ -11,10 +11,13 @@ import javax.persistence.*
 @Table(name="result_table")
 open class ResultEntity {
 
-    constructor(_date : LocalDateTime, _idUser : UserEntity, _value : Double): this() {
+    constructor(_date : LocalDateTime, _idUser : UserEntity, _value : Double, _currentPrice : Double, _lastPrice : Double, _count : Long): this() {
         this.date = _date
         this.idUser = _idUser
         this.value = _value
+        this.currentPrice = _currentPrice
+        this.lastPrice = _lastPrice
+        this.count = _count
     }
 
     constructor()
