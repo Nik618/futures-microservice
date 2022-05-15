@@ -89,6 +89,7 @@ class MainService {
 
         obligationEntities.forEach() {
             obligations.list.add(Obligation().apply {
+                id = it.id
                 date = LocalDateTime.now()
                 idBuyer = it.idBuyer!!.id
                 idSeller = it.idSeller!!.id
