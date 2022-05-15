@@ -277,9 +277,15 @@ class MainService {
 
         val user: User = gson.fromJson(request, object : TypeToken<User>() {}.type)
         val userEntity = userRepository.findByLogin(user.login!!).get()
+        val resultUser = User().apply {
+            id = userEntity.id
+            login = userEntity.login
+            role = userEntity.role
+            name = userEntity.name
+        }
 
         return if (verifyPassword(user.password, userEntity.password, userEntity.salt))
-            gson.toJson(user)
+            gson.toJson(resultUser)
         else false
     }
 
