@@ -7,5 +7,5 @@ import java.util.*
 
 @Repository
 interface UserRepository : CrudRepository<UserEntity, Long> {
-    //override fun findById(id: Long): Optional<UserEntity>
+    fun findByLogin(login: String): Optional<UserEntity>
 }

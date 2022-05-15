@@ -33,6 +33,9 @@ open class UserEntity {
     @Column(name = "name", nullable = false)
     open var name: String? = null
 
+    @Column(name = "salt")
+    open var salt: String? = null
+
 //    @OneToMany(mappedBy = "idSeller", fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
 //    @JoinColumn(name = "idBuyer", referencedColumnName = "id")
 //    private val applicationList: List<ObligationEntity>? = null

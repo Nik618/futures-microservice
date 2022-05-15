@@ -16,7 +16,14 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import java.security.NoSuchAlgorithmException
+import java.security.SecureRandom
+import java.security.spec.InvalidKeySpecException
 import java.time.LocalDateTime
+import java.util.*
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
+
 
 @RestController
 class MainService {
@@ -252,15 +259,26 @@ class MainService {
     @PostMapping("/api/createUser")
     fun createUser(@RequestBody request : String): Boolean? {
 
+        val thisSalt = generateSalt(8)
         val user: User = gson.fromJson(request, object : TypeToken<User>() {}.type)
         val userEntity = UserEntity().apply {
             login = user.login
-            password = user.password
+            password = hashPassword(user.password!!, thisSalt)?.get()
             role = user.role
             name = user.name
+            salt = thisSalt
         }
         userRepository.save(userEntity)
         return true
+    }
+
+    @PostMapping("/api/checkUser")
+    fun checkUser(@RequestBody request : String): Boolean? {
+
+        val user: User = gson.fromJson(request, object : TypeToken<User>() {}.type)
+        val userEntity = userRepository.findByLogin(user.login!!).get()
+
+        return verifyPassword(user.password, userEntity.password, userEntity.salt)
     }
 
     @GetMapping("/api/getUsers")
@@ -280,6 +298,49 @@ class MainService {
             })
         }
         return gson.toJson(users)
+    }
+
+
+
+    private val RAND: SecureRandom = SecureRandom()
+
+    fun generateSalt(length: Int): String {
+        if (length < 1) {
+            System.err.println("error in generateSalt: length must be > 0")
+            return ""
+        }
+        val salt = ByteArray(length)
+        RAND.nextBytes(salt)
+        return Optional.of(Base64.getEncoder().encodeToString(salt)).get()
+    }
+
+    private val ITERATIONS = 65536
+    private val KEY_LENGTH = 512
+    private val ALGORITHM = "PBKDF2WithHmacSHA512"
+
+    fun hashPassword(password: String, salt: String): Optional<String>? {
+        val chars = password.toCharArray()
+        val bytes = salt.toByteArray()
+        val spec = PBEKeySpec(chars, bytes, ITERATIONS, KEY_LENGTH)
+        Arrays.fill(chars, Character.MIN_VALUE)
+        return try {
+            val fac = SecretKeyFactory.getInstance(ALGORITHM)
+            val securePassword = fac.generateSecret(spec).encoded
+            Optional.of(Base64.getEncoder().encodeToString(securePassword))
+        } catch (ex: NoSuchAlgorithmException) {
+            System.err.println("Exception encountered in hashPassword()")
+            Optional.empty()
+        } catch (ex: InvalidKeySpecException) {
+            System.err.println("Exception encountered in hashPassword()")
+            Optional.empty()
+        } finally {
+            spec.clearPassword()
+        }
+    }
+
+    fun verifyPassword(password: String?, key: String?, salt: String?): Boolean {
+        val optEncrypted: Optional<String>? = hashPassword(password!!, salt!!)
+            return if (!optEncrypted!!.isPresent) false else optEncrypted.get() == key
     }
 
 
