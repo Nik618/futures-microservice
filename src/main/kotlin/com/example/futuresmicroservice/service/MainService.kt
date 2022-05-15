@@ -28,6 +28,8 @@ import javax.crypto.spec.PBEKeySpec
 @RestController
 class MainService {
 
+    var expiration = false
+
     @Autowired
     lateinit var applicationRepository: ApplicationRepository
 
@@ -60,7 +62,7 @@ class MainService {
 
         if (isCreate) {
             val applicationEntity = ApplicationEntity().apply {
-                date = LocalDateTime.now()
+                date = LocalDateTime.now().toString()
                 count = application.count
                 price = application.price
                 idUser = userRepository.findById(application.idUser!!).get()
@@ -100,7 +102,7 @@ class MainService {
         if (isCreate) {
             applicationEntity = ApplicationEntity().apply {
                 id = application.id
-                date = LocalDateTime.now()
+                date = LocalDateTime.now().toString()
                 count = application.count
                 price = application.price
                 idUser = userRepository.findById(application.idUser!!).get()
@@ -217,7 +219,6 @@ class MainService {
         val userEntity = userRepository.findById(obligationRequest.idUser!!).get() // выяснили, что за юзер инициирует сделку
         val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get() // выяснили, что за заявка
 
-
         var thisLastPrice = 0.0;
 
         var onDelete = true
@@ -245,7 +246,7 @@ class MainService {
                 price = applicationEntity.idObligation!!.price // цена обязательства не меняется
                 resultRepository.save(ResultEntity().apply {
                     value = applicationEntity.price?.minus(applicationEntity.idObligation!!.price!!)?.times(applicationEntity.count!!)
-                    date = LocalDateTime.now()
+                    date = LocalDateTime.now().toString()
                     idUser = applicationEntity.idUser
                     lastPrice = thisLastPrice
                     currentPrice = applicationEntity.price
@@ -322,7 +323,20 @@ class MainService {
         return gson.toJson(users)
     }
 
+    @PostMapping("/api/expirationStart")
+    fun expirationStart(): Boolean? {
+        val applications = applicationRepository.findAll()
+        applications.forEach() {
+            applicationRepository.delete(it)
+        }
+        expiration = true
+        return true
+    }
 
+    @PostMapping("/api/expirationCheck")
+    fun expirationCheck(): Boolean? {
+        return expiration
+    }
 
     private val RAND: SecureRandom = SecureRandom()
 

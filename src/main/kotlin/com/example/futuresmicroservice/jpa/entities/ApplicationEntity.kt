@@ -11,7 +11,7 @@ import javax.persistence.*
 @Table(name="application_table")
 open class ApplicationEntity {
 
-    constructor(_date : LocalDateTime, _idUser : UserEntity, _count : Long, _price : Double, _idObligation : ObligationEntity): this() {
+    constructor(_date : String, _idUser : UserEntity, _count : Long, _price : Double, _idObligation : ObligationEntity): this() {
         this.date = _date
         this.idUser = _idUser
         this.count = _count
@@ -27,7 +27,7 @@ open class ApplicationEntity {
     open var id: Long? = null
 
     @Column(name = "date", nullable = false)
-    open var date: LocalDateTime? = null
+    open var date: String? = null
 
     @OneToOne(cascade = [(CascadeType.MERGE)])
     @JoinColumn(name = "idUser", referencedColumnName = "id")
