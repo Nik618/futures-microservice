@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class Application (
     var id: Long? = null,
-    var date: String? = null,
+    var date: LocalDateTime? = null,
     var idUser: Long? = null,
     var count: Long? = null,
     var price: Double? = null,
