@@ -251,9 +251,9 @@ class MainService {
             } // расставляем id в зависимости от типа заявки
         }
         obligationRepository.save(obligationEntity)
-        if (!onDelete) {
-        //    applicationRepository.delete(applicationEntity)
-        //else {
+        if (onDelete)
+            applicationRepository.delete(applicationEntity)
+        else {
             applicationEntity.count = applicationEntity.count!! - obligationRequest.count
             applicationRepository.save(applicationEntity)
         }
