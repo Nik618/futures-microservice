@@ -214,6 +214,9 @@ class MainService {
         val userEntity = userRepository.findById(obligationRequest.idUser!!).get() // выяснили, что за юзер инициирует сделку
         val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get() // выяснили, что за заявка
 
+
+        val thisLastPrice = applicationEntity.idObligation!!.price
+
         var onDelete = true
         if (obligationRequest.count!! < applicationEntity.count!!)
             onDelete = false
@@ -240,6 +243,9 @@ class MainService {
                     value = applicationEntity.price?.minus(applicationEntity.idObligation!!.price!!)?.times(applicationEntity.count!!)
                     date = LocalDateTime.now()
                     idUser = applicationEntity.idUser
+                    lastPrice = thisLastPrice
+                    currentPrice = applicationEntity.price
+                    count = applicationEntity.count
                 }) // разница в цене отправится перепродающему
             }
             if (userEntity.role.equals("buyer")) {
