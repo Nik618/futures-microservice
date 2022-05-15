@@ -211,18 +211,19 @@ class MainService {
 
         val obligationRequest: ObligationRequest = gson.fromJson(request, object : TypeToken<ObligationRequest>() {}.type)
 
-        val userEntity = userRepository.findById(obligationRequest.idUser!!).get()
-        val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get()
+        val userEntity = userRepository.findById(obligationRequest.idUser!!).get() // выяснили, что за юзер инициирует сделку
+        val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get() // выяснили, что за заявка
 
         var onDelete = true
         if (obligationRequest.count!! < applicationEntity.count!!)
             onDelete = false
 
         // если обязательство уже существует на момент продажи
-        val obligationEntityLast = applicationEntity.idObligation
-        if (obligationEntityLast != null) {
-            obligationEntityLast.count = obligationEntityLast.count?.minus(applicationEntity.count!!)
-            obligationRepository.save(obligationEntityLast)
+        if (applicationEntity.idObligation != null) {
+            applicationEntity.idObligation!!.count = applicationEntity.idObligation!!.count?.minus(applicationEntity.count!!)
+            if (!onDelete)
+                obligationRepository.save(applicationEntity.idObligation!!)
+            else obligationRepository.delete(applicationEntity.idObligation!!)
         }
 
         // а это новое обязательство, его всё равно нужно создать
@@ -230,10 +231,10 @@ class MainService {
             date = applicationEntity.date
             count = obligationRequest.count
             price = applicationEntity.price
-            if (obligationEntityLast != null) { // если мы дробим существующее обязательство
-                price = obligationEntityLast.price // цена обязательства не меняется
+            if (applicationEntity.idObligation != null) { // если мы дробим существующее обязательство
+                price = applicationEntity.idObligation!!.price // цена обязательства не меняется
                 resultRepository.save(ResultEntity().apply {
-                    value = applicationEntity.price?.minus(obligationEntityLast.price!!)?.times(applicationEntity.count!!)
+                    value = applicationEntity.price?.minus(applicationEntity.idObligation!!.price!!)?.times(applicationEntity.count!!)
                     date = LocalDateTime.now()
                     idUser = userEntity
                 }) // разница в цене отправится перепродающему
