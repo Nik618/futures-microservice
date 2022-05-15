@@ -38,18 +38,34 @@ class MainService {
     @PostMapping("/api/createApplication")
     fun createApplication(@RequestBody request : String): Boolean? {
 
+        var isCreate = true
         val application: Application = gson.fromJson(request, object : TypeToken<Application>() {}.type)
-        val applicationEntity = ApplicationEntity().apply {
-            date = LocalDateTime.now()
-            count = application.count
-            price = application.price
-            idUser = userRepository.findById(application.idUser!!).get()
-            type = application.type
-            if (application.idObligation != null)
-                idObligation = obligationRepository.findById(application.idObligation!!).get()
+        if (application.idObligation != null) {
+            val applicationsByObligation = applicationRepository.findByIdObligation(obligationRepository.findById(
+                application.idObligation!!
+            ).get())
+            var summ : Long = 0
+            applicationsByObligation.forEach() {
+                summ += it?.count!!
+            }
+            if (summ > obligationRepository.findById(application.idObligation!!).get().count!!)
+                isCreate = false
         }
-        applicationRepository.save(applicationEntity)
-        return true
+
+        if (isCreate) {
+            val applicationEntity = ApplicationEntity().apply {
+                date = LocalDateTime.now()
+                count = application.count
+                price = application.price
+                idUser = userRepository.findById(application.idUser!!).get()
+                type = application.type
+                if (application.idObligation != null)
+                    idObligation = obligationRepository.findById(application.idObligation!!).get()
+            }
+            applicationRepository.save(applicationEntity)
+            return true
+        }
+        return false
     }
 
     @GetMapping("/api/getApplicationsForType")
