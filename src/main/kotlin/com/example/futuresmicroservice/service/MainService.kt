@@ -215,7 +215,7 @@ class MainService {
         val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get() // выяснили, что за заявка
 
 
-        val thisLastPrice = applicationEntity.idObligation!!.price
+        var thisLastPrice = 0.0;
 
         var onDelete = true
         if (obligationRequest.count!! < applicationEntity.count!!)
@@ -223,6 +223,7 @@ class MainService {
 
         // если обязательство уже существует на момент продажи
         if (applicationEntity.idObligation != null) {
+            thisLastPrice = applicationEntity.idObligation!!.price!!
             applicationEntity.idObligation!!.count = applicationEntity.idObligation!!.count?.minus(applicationEntity.count!!)
             if (!onDelete)
                 obligationRepository.save(applicationEntity.idObligation!!)
