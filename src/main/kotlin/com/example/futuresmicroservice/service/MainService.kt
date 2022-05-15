@@ -223,7 +223,10 @@ class MainService {
             applicationEntity.idObligation!!.count = applicationEntity.idObligation!!.count?.minus(applicationEntity.count!!)
             if (!onDelete)
                 obligationRepository.save(applicationEntity.idObligation!!)
-            else obligationRepository.delete(applicationEntity.idObligation!!)
+            else {
+                applicationRepository.delete(applicationEntity)
+                obligationRepository.delete(applicationEntity.idObligation!!)
+            }
         }
 
         // а это новое обязательство, его всё равно нужно создать
@@ -248,9 +251,9 @@ class MainService {
             } // расставляем id в зависимости от типа заявки
         }
         obligationRepository.save(obligationEntity)
-        if (onDelete)
-            applicationRepository.delete(applicationEntity)
-        else {
+        if (!onDelete) {
+        //    applicationRepository.delete(applicationEntity)
+        //else {
             applicationEntity.count = applicationEntity.count!! - obligationRequest.count
             applicationRepository.save(applicationEntity)
         }
