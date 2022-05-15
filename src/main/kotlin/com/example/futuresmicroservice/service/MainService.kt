@@ -119,7 +119,7 @@ class MainService {
     @PostMapping("/api/createObligation")
     fun createObligation(@RequestBody request : String): Boolean? {
 
-        val obligationRequest: ObligationRequest = gson.fromJson(request, object : TypeToken<Obligation>() {}.type)
+        val obligationRequest: ObligationRequest = gson.fromJson(request, object : TypeToken<ObligationRequest>() {}.type)
 
         val userEntity = userRepository.findById(obligationRequest.idUser!!).get()
         val applicationEntity = applicationRepository.findById(obligationRequest.idApplication!!).get()
