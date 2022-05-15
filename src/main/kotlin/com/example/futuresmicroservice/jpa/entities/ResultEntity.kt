@@ -37,10 +37,10 @@ open class ResultEntity {
     @Column(name = "value", nullable = false)
     open var value: Double? = null
 
-    @Column(name = "lastPrice", nullable = false)
+    @Column(name = "last_price", nullable = false)
     open var lastPrice: Double? = null
 
-    @Column(name = "currentPrice", nullable = false)
+    @Column(name = "current_price", nullable = false)
     open var currentPrice: Double? = null
 
     @Column(name = "count", nullable = false)
