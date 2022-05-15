@@ -137,6 +137,25 @@ class MainService {
         return gson.toJson(applications)
     }
 
+    @GetMapping("/api/getApplicationById")
+    fun getApplicationById(idApplication : Long): String? {
+
+        val applicationEntity = applicationRepository.findById(idApplication).get()
+            val application = Application().apply {
+                id = applicationEntity.id!!
+                date = LocalDateTime.now()
+                if (applicationEntity.idUser != null)
+                    idUser = applicationEntity.idUser!!.id
+                count = applicationEntity.count
+                price = applicationEntity.price
+                if (applicationEntity.idObligation != null)
+                    idObligation = applicationEntity.idObligation!!.id
+                type = applicationEntity.type
+            }
+        return gson.toJson(application)
+    }
+
+
     @GetMapping("/api/getObligationsForUser")
     fun getObligationsForUser(requestIdUser : Long): String? {
 
