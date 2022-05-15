@@ -60,6 +60,7 @@ class MainService {
         val applicationEntities = applicationRepository.findAllByType(requestType)
         applicationEntities.forEach() {
             applications.list.add(Application().apply {
+                id = it?.id
                 date = LocalDateTime.now()
                 if (it?.idUser != null)
                     idUser = it.idUser!!.id
