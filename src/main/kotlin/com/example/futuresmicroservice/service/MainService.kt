@@ -201,6 +201,9 @@ class MainService {
                 date = LocalDateTime.now()
                 idUser = it?.idUser!!.id
                 value = it.value
+                currentPrice = it.currentPrice
+                lastPrice = it.lastPrice
+                count = it.count
             })
         }
         return gson.toJson(results)
