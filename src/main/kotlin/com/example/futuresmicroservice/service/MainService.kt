@@ -239,7 +239,7 @@ class MainService {
                 resultRepository.save(ResultEntity().apply {
                     value = applicationEntity.price?.minus(applicationEntity.idObligation!!.price!!)?.times(applicationEntity.count!!)
                     date = LocalDateTime.now()
-                    idUser = userEntity
+                    idUser = applicationEntity.idUser
                 }) // разница в цене отправится перепродающему
             }
             if (userEntity.role.equals("buyer")) {
