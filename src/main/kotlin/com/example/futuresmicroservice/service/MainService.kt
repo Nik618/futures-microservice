@@ -44,7 +44,7 @@ class MainService {
             val applicationsByObligation = applicationRepository.findByIdObligation(obligationRepository.findById(
                 application.idObligation!!
             ).get())
-            var summ : Long = 0
+            var summ : Long = application.count!!
             applicationsByObligation.forEach() {
                 summ += it?.count!!
             }
