@@ -139,7 +139,7 @@ class MainService {
         // а это новое обязательство, его всё равно нужно создать
         val obligationEntity = ObligationEntity().apply {
             date = applicationEntity.date
-            count = applicationEntity.count
+            count = obligationRequest.count
             price = applicationEntity.price
             if (obligationEntityLast != null) { // если мы дробим существующее обязательство
                 price = obligationEntityLast.price // цена обязательства не меняется
@@ -161,7 +161,7 @@ class MainService {
         if (onDelete)
             applicationRepository.delete(applicationEntity)
         else {
-            applicationEntity.count = applicationEntity.count!! - obligationEntity.count!!
+            applicationEntity.count = applicationEntity.count!! - obligationRequest.count
             applicationRepository.save(applicationEntity)
         }
         return true
