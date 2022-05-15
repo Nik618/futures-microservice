@@ -36,7 +36,7 @@ open class ApplicationEntity {
     @Column(name = "count", nullable = false)
     open var count: Long? = null
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "price")
     open var price: Double? = null
 
     @Column(name = "type", nullable = false)
