@@ -273,12 +273,14 @@ class MainService {
     }
 
     @PostMapping("/api/checkUser")
-    fun checkUser(@RequestBody request : String): Boolean? {
+    fun checkUser(@RequestBody request : String): Any? {
 
         val user: User = gson.fromJson(request, object : TypeToken<User>() {}.type)
         val userEntity = userRepository.findByLogin(user.login!!).get()
 
-        return verifyPassword(user.password, userEntity.password, userEntity.salt)
+        return if (verifyPassword(user.password, userEntity.password, userEntity.salt))
+            gson.toJson(user)
+        else false
     }
 
     @GetMapping("/api/getUsers")
