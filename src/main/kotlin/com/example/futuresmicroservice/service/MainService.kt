@@ -140,6 +140,7 @@ class MainService {
         val obligationEntity = ObligationEntity().apply {
             date = applicationEntity.date
             count = applicationEntity.count
+            price = applicationEntity.price
             if (obligationEntityLast != null) { // если мы дробим существующее обязательство
                 price = obligationEntityLast.price // цена обязательства не меняется
                 resultRepository.save(ResultEntity().apply {
