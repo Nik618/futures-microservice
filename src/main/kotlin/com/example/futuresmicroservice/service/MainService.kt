@@ -37,7 +37,6 @@ class MainService {
 
     @PostMapping("/api/createApplication")
     fun createApplication(@RequestBody request : String): Boolean? {
-
         var isCreate = true
         val application: Application = gson.fromJson(request, object : TypeToken<Application>() {}.type)
         if (application.idObligation != null) {
@@ -67,6 +66,54 @@ class MainService {
         }
         return false
     }
+
+    @PostMapping("/api/updateApplication")
+    fun updateApplication(@RequestBody request : String): Boolean? {
+        var isCreate = true
+        val application: Application = gson.fromJson(request, object : TypeToken<Application>() {}.type)
+        var applicationEntity = applicationRepository.findById(application.id!!).get()
+
+        if (application.idObligation != null) { // заявка вторична
+            val applicationsByObligation = applicationRepository.findByIdObligation(obligationRepository.findById(
+                application.idObligation!!
+            ).get())
+            var summ : Long? = applicationEntity.count?.minus(application.count!!)
+
+            if (summ != null) {
+                applicationsByObligation.forEach() {
+                    summ += it?.count!!
+                }
+            }
+            if (summ != null) {
+                if (summ > obligationRepository.findById(application.idObligation!!).get().count!!)
+                    isCreate = false
+            }
+        }
+
+        if (isCreate) {
+            applicationEntity = ApplicationEntity().apply {
+                id = application.id
+                date = LocalDateTime.now()
+                count = application.count
+                price = application.price
+                idUser = userRepository.findById(application.idUser!!).get()
+                type = application.type
+                if (application.idObligation != null)
+                    idObligation = obligationRepository.findById(application.idObligation!!).get()
+            }
+            applicationRepository.save(applicationEntity)
+            return true
+        }
+        return false
+    }
+
+    @GetMapping("/api/removeApplication")
+    fun removeApplication(id : Long): Boolean? {
+        val applicationEntity = applicationRepository.findById(id).get()
+        applicationRepository.delete(applicationEntity)
+        return true
+    }
+
 
     @GetMapping("/api/getApplicationsForType")
     fun getApplicationsForType(requestType : String): String? {
@@ -160,7 +207,7 @@ class MainService {
             if (obligationEntityLast != null) { // если мы дробим существующее обязательство
                 price = obligationEntityLast.price // цена обязательства не меняется
                 resultRepository.save(ResultEntity().apply {
-                    value = applicationEntity.price?.minus(obligationEntityLast.price!!)
+                    value = applicationEntity.price?.minus(obligationEntityLast.price!!)?.times(applicationEntity.count!!)
                     date = LocalDateTime.now()
                     idUser = userEntity
                 }) // разница в цене отправится перепродающему
